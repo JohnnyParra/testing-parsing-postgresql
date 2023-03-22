@@ -114,3 +114,15 @@ const content = 'Q1. Which keyword is used to declare a variable in JavaScript?\
 'C. TypeError\n' +
 'D. undefined\n' +
 'Answer: A';
+
+const newContent = content.replace(/\n/g, "NEwlInE");
+const wholeQuestion1 = newContent.match(/Q1\..*?(?=Q2\.)/g)[0].replace(/NEwlInE/g, "\n")
+const wholeQuestion2 = newContent.match(/Q2\..*?(?=Q3\.)/g)[0].replace(/NEwlInE/g, "\n")
+const wholeQuestion3 = newContent.match(/Q3\..*?(?=Q4\.)/g)[0].replace(/NEwlInE/g, "\n")
+const wholeQuestion4 = newContent.match(/Q4\..*?(?=Q5\.)/g)[0].replace(/NEwlInE/g, "\n")
+const wholeQuestion5 = newContent.match(/Q5\..*/g)[0].replace(/NEwlInE/g, "\n")
+console.log(wholeQuestion1)
+console.log(wholeQuestion2)
+console.log(wholeQuestion3)
+console.log(wholeQuestion4)
+console.log(wholeQuestion5)

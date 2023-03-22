@@ -70,6 +70,7 @@ const postQuestion = async(req, res) => {
     if(error){
       throw error
     }
+    // console.log(results.rows)
     res.status(200).json(results.rows)
   })
 };
@@ -80,7 +81,7 @@ const postQuestion = async(req, res) => {
 
 // Gets all questions from database
 const getQuestions = (req, res) => {
-  pool.query(`SELECT * FROM public.questions`,(error, results) => {
+  pool.query(`SELECT id, type, subject_id, ARRAY[option1, option2, option3, option4] as choices, answer FROM public.questions`,(error, results) => {
     if(error){
       throw error
     }
