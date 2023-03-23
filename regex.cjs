@@ -64,58 +64,58 @@
 
 
 //// Regex test for parsing more than one multiple choice questions (not finished)
-const originalContent = 'Q1. Which keyword is used to declare a variable in JavaScript?\n' +
-'A. int\n' +
-'B. var\n' +
-'C. let\n' +
-'D. const\n' +
-'Answer: B\n' +
-'\n' +
-'Q2. What is the output of the following code?\n' +
-'\n' +
-'```\n' +
-'console.log(10 + "20");\n' +
-'```\n' +
-'\n' +
-'A. 1020\n' +
-'B. 30\n' +
-'C. "1020"\n' +
-'D. "30"\n' +
-'Answer: C\n' +
-'\n' +
-'Q3. What is the output of the following code?\n' +
-'\n' +
-'```\n' +
-'console.log(typeof NaN);\n' +
-'```\n' +
-'\n' +
-'A. "number"\n' +
-'B. "string"\n' +
-'C. "undefined"\n' +
-'D. "NaN"\n' +
-'Answer: A\n' +
-'\n' +
-'Q4. Which of the following is not a JavaScript data type?\n' +
-'A. Boolean\n' +
-'B. String\n' +
-'C. Symbol\n' +
-'D. Float\n' +
-'Answer: D\n' +
-'\n' +
-'Q5. What is the output of the following code?\n' +
-'\n' +
-'```\n' +
-'let arr = [1, 2, 3];\n' +
-'console.log(arr instanceof Array);\n' +
-'```\n' +
-'\n' +
-'A. true\n' +
-'B. false\n' +
-'C. TypeError\n' +
-'D. undefined\n' +
-'Answer: A';
+// const originalContent = 'Q1. Which keyword is used to declare a variable in JavaScript?\n' +
+// 'A. int\n' +
+// 'B. var\n' +
+// 'C. let\n' +
+// 'D. const\n' +
+// 'Answer: B\n' +
+// '\n' +
+// 'Q2. What is the output of the following code?\n' +
+// '\n' +
+// '```\n' +
+// 'console.log(10 + "20");\n' +
+// '```\n' +
+// '\n' +
+// 'A. 1020\n' +
+// 'B. 30\n' +
+// 'C. "1020"\n' +
+// 'D. "30"\n' +
+// 'Answer: C\n' +
+// '\n' +
+// 'Q3. What is the output of the following code?\n' +
+// '\n' +
+// '```\n' +
+// 'console.log(typeof NaN);\n' +
+// '```\n' +
+// '\n' +
+// 'A. "number"\n' +
+// 'B. "string"\n' +
+// 'C. "undefined"\n' +
+// 'D. "NaN"\n' +
+// 'Answer: A\n' +
+// '\n' +
+// 'Q4. Which of the following is not a JavaScript data type?\n' +
+// 'A. Boolean\n' +
+// 'B. String\n' +
+// 'C. Symbol\n' +
+// 'D. Float\n' +
+// 'Answer: D\n' +
+// '\n' +
+// 'Q5. What is the output of the following code?\n' +
+// '\n' +
+// '```\n' +
+// 'let arr = [1, 2, 3];\n' +
+// 'console.log(arr instanceof Array);\n' +
+// '```\n' +
+// '\n' +
+// 'A. true\n' +
+// 'B. false\n' +
+// 'C. TypeError\n' +
+// 'D. undefined\n' +
+// 'Answer: A';
 
-const newContent = originalContent.replace(/\n/g, "NEwlInE");
+// const newContent = originalContent.replace(/\n/g, "NEwlInE");
 
 function parsingMultipleMCQ(content, num, total){
   let regex;
@@ -131,19 +131,27 @@ function parsingMultipleMCQ(content, num, total){
 
 function parsingMCQ(content, num){
   let regex = new RegExp(`Q${num.toString()}\\..*?(?=A\\.)`);
-  const question = content.match(regex)[0].replace(/NEwlInE/g, "\n");
+  let questionRegex = new RegExp(`Q${num.toString()}\\.`)
+  const question = content.match(regex)[0].replace(/NEwlInE/g, "\n").replace(questionRegex, "").trim();
   const option1 = content.match(/A\..*?(?=B\.)/g)[0].replace(/NEwlInE/g, "").replace(/A\./, "").trim();
   const option2 = content.match(/B\..*?(?=C\.)/g)[0].replace(/NEwlInE/g, "").replace(/B\./, "").trim();
   const option3 = content.match(/C\..*?(?=D\.)/g)[0].replace(/NEwlInE/g, "").replace(/C\./, "").trim();
   const option4 = content.match(/D\..*?(?=Answer)/g)[0].replace(/NEwlInE/g, "").replace(/D\./, "").trim();
   const answer = answerIndex(content.match(/Answer:.*/g)[0].replace(/Answer:/g, "").trim());
+  return [question, option1, option2, option3, option4, answer]
 }
 
-let total = 5;
-for(let i = 1; i <= total; i++){
-  const question = parsingMultipleMCQ(newContent, i, total)
-  parsingMCQ(question, i)
-}
+// let total = 5;
+// let rowValues = `INSERT INTO public.questions (type, subject_id, question, option1, option2, option3, option4, answer) VALUES`;
+// for(let i = 1; i <= total; i++){
+//   const NewQuestion = parsingMultipleMCQ(newContent, i, total)
+//   let [question, option1, option2, option3, option4, answer] = parsingMCQ(NewQuestion, i)
+//   if(i == total){
+//     rowValues += `('mcq', 1, '${question}', '${option1}', '${option2}', '${option3}', '${option4}', ${answer})`
+//   } else{
+//     rowValues += `('mcq', 1, '${question}', '${option1}', '${option2}', '${option3}', '${option4}', ${answer}),`
+//   }
+// }
 
 function answerIndex(letter){
   if(letter == 'A'){
@@ -153,4 +161,10 @@ function answerIndex(letter){
   } else if(letter == 'C'){
     return 2
   } else return 3
+};
+
+module.exports = {
+  answerIndex,
+  parsingMCQ,
+  parsingMultipleMCQ,
 };
