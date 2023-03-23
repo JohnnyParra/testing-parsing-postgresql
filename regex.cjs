@@ -64,7 +64,7 @@
 
 
 //// Regex test for parsing more than one multiple choice questions (not finished)
-const content = 'Q1. Which keyword is used to declare a variable in JavaScript?\n' +
+const originalContent = 'Q1. Which keyword is used to declare a variable in JavaScript?\n' +
 'A. int\n' +
 'B. var\n' +
 'C. let\n' +
@@ -115,14 +115,42 @@ const content = 'Q1. Which keyword is used to declare a variable in JavaScript?\
 'D. undefined\n' +
 'Answer: A';
 
-const newContent = content.replace(/\n/g, "NEwlInE");
-const wholeQuestion1 = newContent.match(/Q1\..*?(?=Q2\.)/g)[0].replace(/NEwlInE/g, "\n")
-const wholeQuestion2 = newContent.match(/Q2\..*?(?=Q3\.)/g)[0].replace(/NEwlInE/g, "\n")
-const wholeQuestion3 = newContent.match(/Q3\..*?(?=Q4\.)/g)[0].replace(/NEwlInE/g, "\n")
-const wholeQuestion4 = newContent.match(/Q4\..*?(?=Q5\.)/g)[0].replace(/NEwlInE/g, "\n")
-const wholeQuestion5 = newContent.match(/Q5\..*/g)[0].replace(/NEwlInE/g, "\n")
-console.log(wholeQuestion1)
-console.log(wholeQuestion2)
-console.log(wholeQuestion3)
-console.log(wholeQuestion4)
-console.log(wholeQuestion5)
+const newContent = originalContent.replace(/\n/g, "NEwlInE");
+
+function parsingMultipleMCQ(content, num, total){
+  let regex;
+  if(total == 1){
+    return content
+  } else if (total == num){
+    regex = new RegExp(`Q${num}\\..*`)
+  } else{
+    regex = new RegExp(`Q${num.toString()}\\..*?(?=Q${(num + 1).toString()}\\.)`)
+  }
+  return content.match(regex)[0];
+}
+
+function parsingMCQ(content, num){
+  let regex = new RegExp(`Q${num.toString()}\\..*?(?=A\\.)`);
+  const question = content.match(regex)[0].replace(/NEwlInE/g, "\n");
+  const option1 = content.match(/A\..*?(?=B\.)/g)[0].replace(/NEwlInE/g, "").replace(/A\./, "").trim();
+  const option2 = content.match(/B\..*?(?=C\.)/g)[0].replace(/NEwlInE/g, "").replace(/B\./, "").trim();
+  const option3 = content.match(/C\..*?(?=D\.)/g)[0].replace(/NEwlInE/g, "").replace(/C\./, "").trim();
+  const option4 = content.match(/D\..*?(?=Answer)/g)[0].replace(/NEwlInE/g, "").replace(/D\./, "").trim();
+  const answer = answerIndex(content.match(/Answer:.*/g)[0].replace(/Answer:/g, "").trim());
+}
+
+let total = 5;
+for(let i = 1; i <= total; i++){
+  const question = parsingMultipleMCQ(newContent, i, total)
+  parsingMCQ(question, i)
+}
+
+function answerIndex(letter){
+  if(letter == 'A'){
+    return 0
+  } else if(letter == 'B'){
+    return 1
+  } else if(letter == 'C'){
+    return 2
+  } else return 3
+};
