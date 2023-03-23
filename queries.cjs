@@ -36,7 +36,7 @@ const getUsers = (req, res) => {
 
 
 const postQuestion = async(req, res) => {
-  const template = "Example of a multiple choice question:\nQ1. What is the syntax for a for loop in Javascript?\nA. for(i=0, i < 10, i++\nB.\nC.\nD.\nAnswer: B\n\nOn a scale from 1 to 10 with 10 being the hardest and 1 being the easiest, Using the formatting of the example above, generate 5 multiple choice 7 out of 10 difficulty javascript question."
+  const template = "Example of a multiple choice question:\nQ1. What is the syntax for a for loop in Javascript?\nA. for(i=0, i < 10, i++\nB.\nC.\nD.\nAnswer: B\n\nOn a scale from 1 to 10 with 10 being the hardest and 1 being the easiest, Using the formatting of the example above, generate 5 different multiple choice 7 out of 10 difficulty javascript question."
 
   const chat = await openai.createChatCompletion({
     model:"gpt-3.5-turbo",
@@ -47,6 +47,7 @@ const postQuestion = async(req, res) => {
     temperature: 0.7,
     top_p: 1
   });
+  console.log(chat.data.choices[0].message.content)
   const content = chat.data.choices[0].message.content.replace(/\n/g, "NEwlInE");
 
   let total = 5;// How many questions asked to be returned in the template
@@ -76,7 +77,7 @@ const postQuestion = async(req, res) => {
 
 // Gets all questions from database
 const getQuestions = (req, res) => {
-  pool.query(`SELECT id, type, subject_id, ARRAY[option1, option2, option3, option4] as choices, answer FROM public.questions`,(error, results) => {
+  pool.query(`SELECT id, type, subject_id, question, ARRAY[option1, option2, option3, option4] as choices, answer FROM public.questions`,(error, results) => {
     if(error){
       throw error
     }
